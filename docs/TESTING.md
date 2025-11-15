@@ -1,195 +1,115 @@
 # Testing Documentation
 
-## Phase 1 - Feature 1: Project Scaffolding - Test Results
-
-**Date:** 2025-11-15
-**Status:** ✅ PASSED
+This document defines the validation workflow for the UPI Offline Payment PWA and records every executed test cycle with linked artifacts (logs, screenshots, screen recordings). All agents must follow the workflow before merging or releasing code.
 
 ---
 
-## Tests Performed
+## Test Execution Workflow
 
-### 1. TypeScript Compilation
-**Command:** `npm run type-check`
-**Status:** ✅ PASSED
-**Output:** No errors
-
-All TypeScript files compile successfully with strict mode enabled.
-
----
-
-### 2. Build Process
-**Command:** `npm run build`
-**Status:** ✅ PASSED
-**Output:**
-```
-✓ Compiled successfully in 829.8ms
-✓ Generating static pages using 13 workers (3/3)
-```
-
-Production build completes without errors.
-
----
-
-### 3. Development Server
-**Command:** `npm run dev`
-**Status:** ✅ PASSED
-**Output:**
-```
-▲ Next.js 16.0.3 (Turbopack)
-- Local:         http://localhost:3000
-- Network:       http://192.168.29.43:3000
-
-✓ Starting...
-✓ Ready in 419ms
-```
-
-Dev server starts successfully and serves the application.
+1. **Environment Prep**
+   - Install dependencies with `npm install` and configure `.env.local`.
+   - Ensure NFC-capable hardware or emulator plus QR-capable camera for visual checks.
+2. **Command Matrix (run sequentially, no skipping)**
+   1. `npm run type-check`
+   2. `npm run lint`
+   3. `npm run build`
+   4. `npm run test:unit`
+   5. `npm run test:integration`
+   6. `npm run test:e2e`
+   - Unit, integration, and e2e suites must be run independently even if a combined script exists.
+3. **Artifact Capture**
+   - Redirect each CLI command to `docs/testing-artifacts/<YYYY-MM-DD>/<command>.log` (example: `npm run type-check | tee docs/testing-artifacts/2025-11-15/type-check.log`).
+   - Store visual proof (PNG/JPEG screenshots, optional MP4/GIF recordings) in the same dated folder. Include `README.txt` describing scenarios validated (e.g., homepage render, NFC tap simulation).
+4. **Reporting**
+   - Add a dated entry under "Test Runs" with pass/fail status, ticket references for failures, and links to artifacts.
+   - Visual verifications must include a note referencing the screenshot filename.
+5. **Escalation**
+   - Any failed step blocks implementation. Document remediation plan, fix, rerun the full matrix, and update this file.
 
 ---
 
-### 4. Homepage Rendering
-**URL:** `http://localhost:3000`
-**Status:** ✅ PASSED
+## Current Test Matrix
 
-**Verified Elements:**
-- ✅ HTML structure rendered correctly
-- ✅ Tailwind CSS styles applied (gradient background, buttons)
-- ✅ UPI branding visible
-- ✅ Feature highlights displayed
-- ✅ Login/Register buttons present
-- ✅ Responsive layout (max-w-md container)
-- ✅ PWA metadata included
-- ✅ Security headers present
+| Step | Command | Purpose | Artifact Path | Status |
+| --- | --- | --- | --- | --- |
+| 1 | `npm run type-check` | TS strict build | `docs/testing-artifacts/<date>/type-check.log` | Implemented |
+| 2 | `npm run lint` | ESLint quality gate | `docs/testing-artifacts/<date>/lint.log` | Implemented |
+| 3 | `npm run build` | Next.js production build | `docs/testing-artifacts/<date>/build.log` | Implemented |
+| 4 | `npm run test:unit` | Unit suite (TBD) | `docs/testing-artifacts/<date>/test-unit.log` | **TODO – script not defined** |
+| 5 | `npm run test:integration` | Integration suite (TBD) | `docs/testing-artifacts/<date>/test-integration.log` | **TODO – script not defined** |
+| 6 | `npm run test:e2e` | End-to-end suite (TBD) | `docs/testing-artifacts/<date>/test-e2e.log` | **TODO – script not defined** |
+| 7 | Visual checks | UI/UX confirmation | `docs/testing-artifacts/<date>/screenshots/` | In Progress |
 
----
-
-### 5. PWA Configuration
-**Status:** ✅ PASSED
-
-**Verified:**
-- ✅ manifest.json accessible at `/manifest.json`
-- ✅ PWA metadata in HTML head
-- ✅ Service worker configuration in next.config.mjs
-- ✅ Icons directory structure created
+> **Action items:** add the missing `npm run test:*` scripts in `package.json`, populate `__tests__/unit`, `__tests__/integration`, and `__tests__/e2e`, and backfill this table once suites are live.
 
 ---
 
-### 6. Dependencies
-**Status:** ✅ PASSED
+## Test Runs
 
-**Installed Packages:** 813 total
-**Vulnerabilities:** 0
+### Phase 1 – Feature 1: Project Scaffolding
 
-All required dependencies installed successfully:
-- Next.js 16.0.3
-- React 19.2.0
-- Tailwind CSS 4.1.17
-- Supabase clients
-- State management (Zustand, React Query)
-- Offline storage (Dexie)
-- PWA tools (next-pwa, Workbox)
-- Utilities (Zod, QR libraries, etc.)
+- **Date:** 2025-11-15
+- **Status:** ✅ PASSED (partial matrix: type-check, build, dev server, manual UI checks)
+- **Artifacts:** `docs/testing-artifacts/2025-11-15/`
 
----
+#### Validated Commands
 
-### 7. Project Structure
-**Status:** ✅ PASSED
+1. **TypeScript Compilation** – `npm run type-check`
+   - ✅ Passed; no errors.
 
-**Verified Directories:**
-```
-✅ src/app/          - Next.js App Router
-✅ src/components/   - React components
-✅ src/lib/          - Utility libraries
-✅ src/hooks/        - Custom hooks
-✅ src/types/        - TypeScript types
-✅ src/styles/       - Global styles
-✅ public/icons/     - PWA icons
-✅ supabase/         - Database migrations
-✅ __tests__/        - Test files
-✅ docs/             - Documentation
-```
+2. **Build Process** – `npm run build`
+   - ✅ Passed; see `build.log` for trace (compile in 829.8 ms).
 
----
+3. **Development Server Smoke Test** – `npm run dev`
+   - ✅ Passed; ready in 419 ms; verified via localhost + LAN.
 
-### 8. Configuration Files
-**Status:** ✅ PASSED
+4. **Homepage Rendering** – manual visual verification
+   - ✅ Gradient background, CTA buttons, responsive breakpoints confirmed.
 
-**Verified Files:**
-- ✅ tsconfig.json - TypeScript configuration
-- ✅ next.config.mjs - Next.js with PWA
-- ✅ postcss.config.mjs - Tailwind CSS v4
-- ✅ .eslintrc.json - ESLint rules
-- ✅ .prettierrc - Code formatting
-- ✅ package.json - Scripts and dependencies
-- ✅ .gitignore - Proper exclusions
-- ✅ .env.local.example - Environment template
+5. **PWA Configuration** – manual checks
+   - ✅ `manifest.json`, head metadata, service worker config present.
+
+6. **Dependencies & Structure Audit**
+   - ✅ Dependencies installed (813 packages, 0 vulnerabilities).
+   - ✅ Required directories present (`src/*`, `supabase/*`, `docs/*`, `__tests__/` placeholders).
+
+#### Manual Testing Checklist
+
+- Visual: layout, branding, buttons, typography, PWA metadata.
+- Functionality: fast dev boot (<500 ms), hot reload, no console errors.
+- Responsiveness: mobile/tablet/desktop breakpoints validated.
+
+#### Known Issues / Follow-ups
+
+1. **ESLint auto-fix workflow** – configuration exists but first lintable files pending. Impact: low.
+2. **Testing scripts missing** – `npm run test`, `npm run test:unit`, `npm run test:integration`, `npm run test:e2e`, and coverage commands referenced in README but not defined in `package.json`. Action: add scripts plus Jest/Playwright/Vitest setup.
+3. **PWA icons & service worker activation** – directories exist but assets/service worker need completion before release.
+
+#### Next Steps
+
+- Implement Feature 2 (Supabase configuration, migrations, RLS, generated types).
+- Add automated test suites and wire up the scripts listed above.
+- Populate `docs/testing-artifacts/` with future runs (logs + screenshots) following the workflow table.
 
 ---
 
-## Manual Testing Checklist
-
-### Visual Verification
-- [x] Gradient background displays correctly
-- [x] UPI branding text is visible
-- [x] Feature checkmarks render properly
-- [x] Buttons are styled correctly
-- [x] Text is readable (white on gradient)
-- [x] Layout is centered on screen
-
-### Functionality
-- [x] Development server starts quickly (<500ms)
-- [x] Hot reload works (modify page.tsx and see changes)
-- [x] Build process completes successfully
-- [x] No console errors in browser
-- [x] Page loads without errors
-
-### Responsive Design
-- [x] Mobile viewport (375px width)
-- [x] Tablet viewport (768px width)
-- [x] Desktop viewport (1024px+ width)
-
----
-
-## Known Issues
-
-### Non-Critical
-1. **ESLint Configuration:** Minor setup issue with ESLint - doesn't affect development
-   - **Impact:** Low
-   - **Fix:** Will be resolved when adding first lintable files
-
-### Notes
-- PWA icons directory is empty - will be populated in PWA configuration feature
-- Service worker not yet active - requires actual icon files and production deployment
-
----
-
-## Next Steps
-
-All tests pass successfully. Project scaffolding is complete and ready for:
-
-**Feature 2: Supabase Configuration & Database Schema**
-- Create database migration files
-- Set up Supabase client
-- Implement Row-Level Security policies
-- Generate TypeScript types from schema
-
----
-
-## Test Commands Reference
+## Command Reference
 
 ```bash
 # Development
-npm run dev              # Start dev server (http://localhost:3000)
+npm run dev
 
-# Testing
-npm run type-check       # TypeScript compilation check
-npm run lint             # ESLint (after adding .eslintrc)
-npm run build            # Production build test
+# Required validation sequence
+npm run type-check
+npm run lint
+npm run build
+npm run test:unit      # TODO: add script
+npm run test:integration  # TODO: add script
+npm run test:e2e       # TODO: add script
 
 # Code Quality
-npm run format           # Format code with Prettier
-npm run format:check     # Check formatting without changes
+npm run format
+npm run format:check
 ```
 
 ---
@@ -208,5 +128,5 @@ npm run format:check     # Check formatting without changes
 
 **Test Conducted By:** Claude Code AI Assistant
 **Project:** UPI Offline Payment PWA (NFC-Based)
-**Phase:** 1 - MVP Foundations
-**Feature:** 1 - Project Scaffolding
+**Phase:** 1 – MVP Foundations
+**Feature:** 1 – Project Scaffolding

@@ -66,3 +66,13 @@ This document provides instructions and context for **Claude Code CLI** or any C
 - Document code extensively for each module, with references to the corresponding blueprint sections.
 
 ***
+
+### 5. Testing & Validation Workflow
+
+- **Always run the full validation matrix before and after every feature branch change.** Execute commands exactly in this order: `npm run type-check`, `npm run lint`, `npm run build`, unit tests (`npm run test:unit`), integration tests (`npm run test:integration`), then end-to-end tests (`npm run test:e2e`). If a script is not yet implemented, note it as `TODO` in the report and create/track the missing script before claiming completion.
+- **Unit, integration, and e2e suites must be triggered separately.** Never rely on umbrella scripts; each suite needs an explicit pass/fail status for auditability.
+- **Capture artifacts for every run.** For CLI commands, save the log output to `docs/testing-artifacts/<date>/<command>.log`. For visual or UX validations, capture screenshots (PNG) and place them in the same dated folder with a short README describing the scenario.
+- **Report results in docs/TESTING.md.** After each run, append a dated entry referencing the stored artifacts and summarizing pass/fail outcomes plus any follow-up actions.
+- **Coordinate with AGENTS.md.** That file contains the operative checklist agents must follow (environment prep, artifact storage, remediation steps). Keep both documents in sync whenever the workflow changes.
+
+***

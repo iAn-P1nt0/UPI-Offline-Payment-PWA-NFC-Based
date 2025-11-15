@@ -62,5 +62,34 @@ This file instructs Claude and other agentic systems/coders on how to iterativel
 
 ***
 
+### **TESTING & REPORTING WORKFLOW**
+
+1. **Preparation**
+	- Run `npm install` and configure `.env.local` using `.env.local.example` before executing any suite.
+	- Verify required hardware (NFC-capable device, QR-capable camera) is available for manual validation.
+
+2. **Execution Order (no skipping):**
+	1. `npm run type-check`
+	2. `npm run lint`
+	3. `npm run build`
+	4. `npm run test:unit`
+	5. `npm run test:integration`
+	6. `npm run test:e2e`
+	- Unit, integration, and e2e commands must be run individually. If the script does not exist yet, mark it as `TODO` in `docs/TESTING.md` and open an issue/PR to add the suite.
+
+3. **Artifacts**
+	- Redirect each CLI run to `docs/testing-artifacts/<YYYY-MM-DD>/<command>.log` (create directories as needed).
+	- Store screenshots or videos from visual checks in the same folder with a short `README.txt` explaining the scenario.
+
+4. **Reporting & Escalation**
+	- After the matrix completes, add a dated section to `docs/TESTING.md` summarizing pass/fail results and linking to artifacts.
+	- Any failure blocks further work until resolved; document remediation steps and retest.
+
+5. **Audit Hooks**
+	- Reference both this workflow and `CLAUDE.md` testing guidance in PR templates.
+	- Keep artifacts for the whole phase to support regression analysis and future agent handoffs.
+
+***
+
 **End of agent instructions.**
 Review and update this file with every major architectural or functional change, referencing the original system design for consistency and completeness.
