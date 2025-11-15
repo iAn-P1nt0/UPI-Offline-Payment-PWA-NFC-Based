@@ -19,12 +19,25 @@ type EnvKey =
   | "NEXT_PUBLIC_SUPABASE_ANON_KEY"
   | "SUPABASE_SERVICE_ROLE_KEY";
 
+function readEnvValue(key: EnvKey): string | undefined {
+  switch (key) {
+    case "NEXT_PUBLIC_SUPABASE_URL":
+      return process.env.NEXT_PUBLIC_SUPABASE_URL;
+    case "NEXT_PUBLIC_SUPABASE_ANON_KEY":
+      return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    case "SUPABASE_SERVICE_ROLE_KEY":
+      return process.env.SUPABASE_SERVICE_ROLE_KEY;
+    default:
+      return undefined;
+  }
+}
+
 function resolveEnv(key: EnvKey, fallback?: string) {
   if (resolved.has(key)) {
     return resolved.get(key)!;
   }
 
-  const value = process.env[key];
+  const value = readEnvValue(key);
 
   if (value) {
     resolved.set(key, value);
