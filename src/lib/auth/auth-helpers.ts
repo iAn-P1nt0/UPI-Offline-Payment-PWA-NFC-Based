@@ -180,13 +180,19 @@ export async function getCurrentSession() {
     } = await supabase.auth.getSession();
 
     if (error) {
-      console.error("Failed to get session:", error);
+      // Don't log AuthSessionMissingError as it's expected when not logged in
+      if (error.name !== "AuthSessionMissingError") {
+        console.error("Failed to get session:", error);
+      }
       return null;
     }
 
     return session;
-  } catch (error) {
-    console.error("Error getting session:", error);
+  } catch (error: any) {
+    // Don't log AuthSessionMissingError as it's expected when not logged in
+    if (error?.name !== "AuthSessionMissingError") {
+      console.error("Error getting session:", error);
+    }
     return null;
   }
 }
@@ -203,13 +209,19 @@ export async function getCurrentAuthUser() {
     } = await supabase.auth.getUser();
 
     if (error) {
-      console.error("Failed to get user:", error);
+      // Don't log AuthSessionMissingError as it's expected when not logged in
+      if (error.name !== "AuthSessionMissingError") {
+        console.error("Failed to get user:", error);
+      }
       return null;
     }
 
     return user;
-  } catch (error) {
-    console.error("Error getting user:", error);
+  } catch (error: any) {
+    // Don't log AuthSessionMissingError as it's expected when not logged in
+    if (error?.name !== "AuthSessionMissingError") {
+      console.error("Error getting user:", error);
+    }
     return null;
   }
 }

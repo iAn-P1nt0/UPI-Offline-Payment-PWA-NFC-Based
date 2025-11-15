@@ -31,7 +31,9 @@ function resolveEnv(key: EnvKey, fallback?: string) {
   }
 
   if (!isProduction && fallback) {
-    if (!warned.has(key)) {
+    // Only warn once per key and only in development
+    // Suppress warnings in browser console to reduce noise
+    if (!warned.has(key) && typeof window === "undefined") {
       console.warn(
         `[supabase-env] ${key} is not set. Using development fallback value. Set this in .env.local to silence this warning.`
       );

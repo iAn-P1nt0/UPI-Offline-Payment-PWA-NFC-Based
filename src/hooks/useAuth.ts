@@ -84,8 +84,11 @@ export function useAuth(): UseAuthReturn {
           user.id
         );
       }
-    } catch (error) {
-      console.error("Failed to initialize auth:", error);
+    } catch (error: any) {
+      // Don't log AuthSessionMissingError as it's expected when not logged in
+      if (error?.name !== "AuthSessionMissingError") {
+        console.error("Failed to initialize auth:", error);
+      }
       setAuthState({
         user: null,
         session: null,

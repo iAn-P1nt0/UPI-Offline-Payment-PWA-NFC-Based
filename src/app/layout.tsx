@@ -25,11 +25,12 @@ export const metadata: Metadata = {
   applicationName: "UPI Offline Pay",
   icons: {
     icon: [
-      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
+      // Icons will be added when available
+      // { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      // { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: [
-      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      // { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
 };
@@ -51,7 +52,7 @@ export default function RootLayout({
   return (
       <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/icons/icon-192x192.png" type="image/png" />
+        {/* Favicon will be added when icon files are available */}
       </head>
       <body className={inter.className}>
         <AuthProvider>
