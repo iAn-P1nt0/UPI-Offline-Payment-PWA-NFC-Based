@@ -18,7 +18,7 @@ import {
   getWalletLimits,
 } from "@/lib/wallet/wallet-helpers";
 import {
-  getCachedWalletState,
+  getCachedWalletStateByUserId,
   syncWalletStateFromServer,
   getWalletSyncStatus,
 } from "@/lib/db/wallet-state";
@@ -138,7 +138,7 @@ export function useWallet(): UseWalletReturn {
       }
 
       // Fall back to cached data
-      const cachedWallet = await getCachedWalletState(user.id);
+      const cachedWallet = await getCachedWalletStateByUserId(user.id);
 
       if (cachedWallet) {
         const formatted = formatWalletBalance(cachedWallet.offline_balance_paise);

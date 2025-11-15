@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { AuthProvider } from "@/lib/auth/auth-context";
+import { ServiceWorkerProvider } from "@/components/pwa/ServiceWorkerProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -53,7 +54,10 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ServiceWorkerProvider />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
