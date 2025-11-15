@@ -7,6 +7,7 @@
  */
 
 import { createClient } from "@/lib/db/supabase-client";
+import { isSupabaseClientFallback } from "@/lib/env/supabase";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 /**
@@ -84,6 +85,14 @@ export async function sendOTP(
       return { success: false, error: validation.error };
     }
 
+    if (isSupabaseClientFallback()) {
+      return {
+        success: false,
+        error:
+          "Supabase credentials are not configured. OTP delivery is disabled in local development until NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set.",
+      };
+    }
+
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOtp({
       phone: validation.formatted!,
@@ -137,6 +146,14 @@ export async function verifyOTP(
       return { success: false, error: validation.error };
     }
 
+    if (isSupabaseClientFallback()) {
+      return {
+        success: false,
+        error:
+          "Supabase credentials are not configured. OTP verification is disabled in local development until NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set.",
+      };
+    }
+
     // Validate OTP format (6 digits)
     if (!/^\d{6}$/.test(otp)) {
       return { success: false, error: "OTP must be 6 digits" };
@@ -159,7 +176,14 @@ export async function verifyOTP(
     }
 
     return { success: true, userId: data.user.id };
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.message?.includes("Failed to fetch") || error?.message?.includes("ERR_CONNECTION_REFUSED")) {
+      return {
+        success: false,
+        error:
+          "Unable to reach Supabase for OTP verification. Ensure the service is running and credentials are configured.",
+      };
+    }
     console.error("Error verifying OTP:", error);
     return {
       success: false,

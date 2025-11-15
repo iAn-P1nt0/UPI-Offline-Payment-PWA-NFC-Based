@@ -11,6 +11,7 @@ const DEV_DEFAULTS = {
 
 const resolved = new Map<string, string>();
 const warned = new Set<string>();
+const fallbackKeys = new Set<EnvKey>();
 const isProduction = process.env.NODE_ENV === "production";
 
 type EnvKey =
@@ -39,6 +40,7 @@ function resolveEnv(key: EnvKey, fallback?: string) {
       );
       warned.add(key);
     }
+    fallbackKeys.add(key);
     resolved.set(key, fallback);
     return fallback;
   }
@@ -65,4 +67,14 @@ export function getSupabaseClientConfig() {
     url: getSupabaseUrl(),
     anonKey: getSupabaseAnonKey(),
   } as const;
+}
+
+export function isSupabaseClientFallback() {
+  return (
+    fallbackKeys.has("NEXT_PUBLIC_SUPABASE_URL") || fallbackKeys.has("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+  );
+}
+
+export function isSupabaseServiceFallback() {
+  return fallbackKeys.has("SUPABASE_SERVICE_ROLE_KEY");
 }
