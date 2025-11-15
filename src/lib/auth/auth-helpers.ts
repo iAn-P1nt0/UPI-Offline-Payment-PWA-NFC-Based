@@ -93,13 +93,33 @@ export async function sendOTP(
     });
 
     if (error) {
-      console.error("Failed to send OTP:", error);
+      // Handle connection errors gracefully
+      if (error.message.includes("Failed to fetch") || error.message.includes("ERR_CONNECTION_REFUSED")) {
+        return {
+          success: false,
+          error: "Unable to connect to authentication service. Please check your internet connection and ensure Supabase is configured.",
+        };
+      }
+      // Don't log expected errors in console
+      if (error.name !== "AuthRetryableFetchError") {
+        console.error("Failed to send OTP:", error);
+      }
       return { success: false, error: error.message };
     }
 
     return { success: true };
-  } catch (error) {
-    console.error("Error sending OTP:", error);
+  } catch (error: any) {
+    // Handle connection errors gracefully
+    if (error?.message?.includes("Failed to fetch") || error?.message?.includes("ERR_CONNECTION_REFUSED")) {
+      return {
+        success: false,
+        error: "Unable to connect to authentication service. Please check your internet connection and ensure Supabase is configured.",
+      };
+    }
+    // Don't log connection errors as they're expected when Supabase isn't running
+    if (!error?.message?.includes("Failed to fetch") && !error?.message?.includes("ERR_CONNECTION_REFUSED")) {
+      console.error("Error sending OTP:", error);
+    }
     return { success: false, error: "Failed to send OTP. Please try again." };
   }
 }

@@ -12,6 +12,7 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { formatPhoneForDisplay } from "@/lib/auth";
+import { isOnline } from "@/lib/db/offline-helpers";
 
 function VerifyOTPContent() {
   const router = useRouter();
@@ -29,10 +30,12 @@ function VerifyOTPContent() {
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Send OTP on mount
+  // Send OTP on mount (only if online and phone is available)
   useEffect(() => {
-    if (phone && !otpSent) {
+    if (phone && !otpSent && isOnline()) {
       handleSendOTP();
+    } else if (phone && !otpSent && !isOnline()) {
+      setError("You are offline. Please connect to the internet to send OTP.");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phone]);
