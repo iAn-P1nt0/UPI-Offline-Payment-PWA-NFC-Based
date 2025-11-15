@@ -6,7 +6,7 @@
  * Utilities for phone authentication, OTP validation, and session management
  */
 
-import { createClient } from "@/lib/db/supabase";
+import { createClient } from "@/lib/db/supabase-client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 /**
@@ -360,9 +360,11 @@ export async function registerDevice(
       last_active_at: new Date().toISOString(),
     };
 
-    const { error } = await supabase.from("devices").upsert(deviceInfo as any, {
+    const { error } = await (supabase as any)
+      .from("devices")
+      .upsert(deviceInfo as any, {
       onConflict: "device_fingerprint,user_id",
-    });
+      });
 
     if (error) {
       console.error("Failed to register device:", error);
@@ -386,7 +388,7 @@ export async function isDeviceTrusted(
   try {
     const supabase = createClient();
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from("devices")
       .select("is_trusted")
       .eq("user_id", userId)

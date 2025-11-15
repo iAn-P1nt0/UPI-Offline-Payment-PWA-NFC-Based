@@ -6,8 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --ext ts,tsx --max-warnings=0",
     "type-check": "tsc --noEmit",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "vitest run --config vitest.config.unit.ts",
+    "test:integration": "vitest run --config vitest.config.integration.ts",
+    "test:e2e": "playwright test",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
@@ -70,10 +74,22 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@playwright/test": "^1.56.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/qrcode": "^1.5.6",
+    "@types/testing-library__jest-dom": "^5.14.9",
+    "@vitest/coverage-v8": "^4.0.9",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.3",
     "eslint-config-prettier": "^10.1.8",
-    "prettier": "^3.6.2"
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
+    "jsdom": "^27.2.0",
+    "prettier": "^3.6.2",
+    "typescript-eslint": "^8.46.4",
+    "vitest": "^4.0.9"
   }
 }

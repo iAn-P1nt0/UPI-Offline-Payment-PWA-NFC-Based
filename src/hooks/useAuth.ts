@@ -24,7 +24,10 @@ import {
   canRequestOTP,
   recordOTPRequest,
 } from "@/lib/auth/auth-helpers";
-import { syncWalletStateFromServer, clearAllWalletState } from "@/lib/db";
+import {
+  syncWalletStateFromServer,
+  clearAllWalletState,
+} from "@/lib/db/wallet-state";
 
 export interface AuthState {
   user: User | null;
@@ -77,7 +80,7 @@ export function useAuth(): UseAuthReturn {
       // If authenticated, sync wallet state
       if (user) {
         await syncWalletStateFromServer(
-          (await import("@/lib/db")).createClient(),
+          (await import("@/lib/db/supabase-client")).createClient(),
           user.id
         );
       }
@@ -115,7 +118,7 @@ export function useAuth(): UseAuthReturn {
         // Sync wallet state
         if (user) {
           await syncWalletStateFromServer(
-            (await import("@/lib/db")).createClient(),
+            (await import("@/lib/db/supabase-client")).createClient(),
             user.id
           );
         }
@@ -178,7 +181,7 @@ export function useAuth(): UseAuthReturn {
         await registerDevice(result.userId, fingerprint);
 
         // Sync wallet state
-        const { createClient } = await import("@/lib/db");
+        const { createClient } = await import("@/lib/db/supabase-client");
         await syncWalletStateFromServer(createClient(), result.userId);
       }
 

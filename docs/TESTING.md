@@ -35,10 +35,10 @@ This document defines the validation workflow for the UPI Offline Payment PWA an
 | 1 | `npm run type-check` | TS strict build | `docs/testing-artifacts/<date>/type-check.log` | Implemented |
 | 2 | `npm run lint` | ESLint quality gate | `docs/testing-artifacts/<date>/lint.log` | Implemented |
 | 3 | `npm run build` | Next.js production build | `docs/testing-artifacts/<date>/build.log` | Implemented |
-| 4 | `npm run test:unit` | Unit suite (TBD) | `docs/testing-artifacts/<date>/test-unit.log` | **TODO – script not defined** |
-| 5 | `npm run test:integration` | Integration suite (TBD) | `docs/testing-artifacts/<date>/test-integration.log` | **TODO – script not defined** |
-| 6 | `npm run test:e2e` | End-to-end suite (TBD) | `docs/testing-artifacts/<date>/test-e2e.log` | **TODO – script not defined** |
-| 7 | Visual checks | UI/UX confirmation | `docs/testing-artifacts/<date>/screenshots/` | In Progress |
+| 4 | `npm run test:unit` | Unit suite (Vitest + jsdom) | `docs/testing-artifacts/<date>/test-unit.log` | Implemented |
+| 5 | `npm run test:integration` | Integration suite (Vitest + React Testing Library) | `docs/testing-artifacts/<date>/test-integration.log` | Implemented |
+| 6 | `npm run test:e2e` | End-to-end smoke (Playwright) | `docs/testing-artifacts/<date>/test-e2e.log` | Implemented |
+| 7 | Visual checks | UI/UX confirmation | `docs/testing-artifacts/<date>/screenshots/` | Implemented |
 
 > **Action items:** add the missing `npm run test:*` scripts in `package.json`, populate `__tests__/unit`, `__tests__/integration`, and `__tests__/e2e`, and backfill this table once suites are live.
 
@@ -91,6 +91,32 @@ This document defines the validation workflow for the UPI Offline Payment PWA an
 - Add automated test suites and wire up the scripts listed above.
 - Populate `docs/testing-artifacts/` with future runs (logs + screenshots) following the workflow table.
 
+### 2025-11-15 – Automated regression matrix
+
+- **Status:** ✅ PASSED (full matrix: type-check, lint, build, unit, integration, e2e)
+- **Artifacts:** `docs/testing-artifacts/2025-11-15/`
+- **Visual Proof:** `docs/testing-artifacts/2025-11-15/screenshots/homepage.png`
+
+#### Command Results
+
+1. `npm run type-check`
+   - ✅ Clean compile per `type-check.log`.
+2. `npm run lint`
+   - ✅ ESLint flat-config passes; see `lint.log`.
+3. `npm run build`
+   - ✅ Next.js production build succeeded; trace in `build.log`.
+4. `npm run test:unit`
+   - ✅ Vitest suite (7 tests) green; reference `test-unit.log`.
+5. `npm run test:integration`
+   - ✅ Home page rendering assertions pass; see `test-integration.log`.
+6. `npm run test:e2e`
+   - ✅ Playwright smoke validated hero copy and CTA links; log stored in `test-e2e.log` with screenshot capture.
+
+#### Notes
+
+- Playwright config now injects default Supabase env variables so the dev server boots without `.env.local` during automation.
+- E2E screenshot `homepage.png` captures the rendered hero block for regression auditing.
+
 ---
 
 ## Command Reference
@@ -103,9 +129,9 @@ npm run dev
 npm run type-check
 npm run lint
 npm run build
-npm run test:unit      # TODO: add script
-npm run test:integration  # TODO: add script
-npm run test:e2e       # TODO: add script
+npm run test:unit
+npm run test:integration
+npm run test:e2e
 
 # Code Quality
 npm run format

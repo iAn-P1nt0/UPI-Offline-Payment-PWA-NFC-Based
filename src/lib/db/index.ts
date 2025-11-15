@@ -7,16 +7,16 @@
  */
 
 // Supabase exports
+export { createClient, type SupabaseClient } from "./supabase-client";
+
 export {
-  createClient,
   createServerSupabaseClient,
   createAdminClient,
   getCurrentUser,
   isAuthenticated,
-  type SupabaseClient,
   type SupabaseServerClient,
   type SupabaseAdminClient,
-} from "./supabase";
+} from "./supabase-server";
 
 // Supabase helpers
 export {
