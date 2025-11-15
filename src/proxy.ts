@@ -8,6 +8,8 @@
 
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { isAuthSessionMissingError } from "@supabase/supabase-js";
+import { getSupabaseClientConfig } from "@/lib/env/supabase";
 
 /**
  * Protected routes that require authentication
@@ -33,6 +35,8 @@ const PUBLIC_ROUTES = ["/", "/auth/login", "/auth/register", "/auth/verify-otp"]
  */
 const AUTH_ROUTES = ["/auth/login", "/auth/register"];
 
+const { url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY } = getSupabaseClientConfig();
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -45,8 +49,8 @@ export async function proxy(request: NextRequest) {
 
   // Create Supabase client
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
     {
       cookies: {
         get(name: string) {
@@ -91,9 +95,17 @@ export async function proxy(request: NextRequest) {
   );
 
   // Get session
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  let session = null;
+  try {
+    const {
+      data: { session: currentSession },
+    } = await supabase.auth.getSession();
+    session = currentSession;
+  } catch (error) {
+    if (!isAuthSessionMissingError(error)) {
+      throw error;
+    }
+  }
 
   const isAuthenticated = !!session;
 

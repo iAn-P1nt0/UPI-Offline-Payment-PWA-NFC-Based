@@ -6,9 +6,9 @@
 import { createServerClient, type CookieOptions, createBrowserClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
+import { getSupabaseClientConfig, getSupabaseServiceRoleKey } from "@/lib/env/supabase";
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const { url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY } = getSupabaseClientConfig();
 
 export async function createServerSupabaseClient() {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
@@ -43,17 +43,7 @@ export async function createServerSupabaseClient() {
 }
 
 export function createAdminClient() {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    throw new Error(
-      "Missing Supabase environment variables. Please check your .env.local file."
-    );
-  }
-
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!serviceRoleKey) {
-    throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY environment variable");
-  }
+  const serviceRoleKey = getSupabaseServiceRoleKey();
 
   return createBrowserClient<Database>(SUPABASE_URL, serviceRoleKey, {
     auth: {

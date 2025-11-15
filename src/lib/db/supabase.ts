@@ -10,16 +10,10 @@ import { createBrowserClient } from "@supabase/ssr";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
+import { getSupabaseClientConfig, getSupabaseServiceRoleKey } from "@/lib/env/supabase";
 
 // Environment variables validation
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Missing Supabase environment variables. Please check your .env.local file."
-  );
-}
+const { url: supabaseUrl, anonKey: supabaseAnonKey } = getSupabaseClientConfig();
 
 /**
  * Create a Supabase client for client-side usage (browser)
@@ -65,11 +59,7 @@ export async function createServerSupabaseClient() {
  * Bypasses Row-Level Security (RLS)
  */
 export function createAdminClient() {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!serviceRoleKey) {
-    throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY environment variable");
-  }
+  const serviceRoleKey = getSupabaseServiceRoleKey();
 
   return createBrowserClient<Database>(supabaseUrl!, serviceRoleKey, {
     auth: {
